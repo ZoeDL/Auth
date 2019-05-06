@@ -25,18 +25,16 @@ class LoginForm extends Component {
     };
 
     onLoginSuccess = () => {
-        alert("Succeed");
         this.setState({
             loading: false,
             email: '',
             password: ''
         });
-    };
+    }
 
     onLoginFailed = () => {
-        alert("Failed");
         this.setState({loading: false});
-    };
+    }
 
     renderButton = () => {
         if(this.state.loading) {

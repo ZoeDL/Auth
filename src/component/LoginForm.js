@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Card, CardSection, Input } from './common';
+import firebase from 'firebase';
+import { Button, Card, CardSection, Input, Spinner } from './common';
 
 class LoginForm extends Component {
     constructor(props) {
@@ -9,6 +10,22 @@ class LoginForm extends Component {
             password: ''
         };
     }
+
+    onButtonPress = () => {
+        const { email, password } = this.state;
+        firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {alert("Log in Succeed!")})
+        .catch(() => {
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(() => {
+                alert("New user created!")
+            })
+            .catch(()=> {
+                alert("Log in Failed!");
+            })
+        })
+    };
+
     render() {
         return(
             <Card>
@@ -27,8 +44,9 @@ class LoginForm extends Component {
                            secureTextEntry={true}
                     />
                 </CardSection>
+                <Spinner />
                 <CardSection>
-                    <Button>Log in</Button>
+                    <Button onClick={this.onButtonPress}>Log in</Button>
                 </CardSection>
             </Card>
         );

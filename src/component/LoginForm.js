@@ -7,24 +7,46 @@ class LoginForm extends Component {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            loading: false,
         };
     }
 
     onButtonPress = () => {
+        this.setState({loading: true});
         const { email, password } = this.state;
         firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => {alert("Log in Succeed!")})
+        .then(this.onLoginSuccess())
         .catch(() => {
             firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then(() => {
-                alert("New user created!")
-            })
-            .catch(()=> {
-                alert("Log in Failed!");
-            })
+            .then(this.onLoginSuccess())
+            .catch(this.onLoginFailed())
         })
     };
+
+    onLoginSuccess = () => {
+        alert("Succeed");
+        this.setState({
+            loading: false,
+            email: '',
+            password: ''
+        });
+    };
+
+    onLoginFailed = () => {
+        alert("Failed");
+        this.setState({loading: false});
+    };
+
+    renderButton = () => {
+        if(this.state.loading) {
+            return <Spinner />
+        }
+
+        return <Button onClick={this.onButtonPress}>
+                    Log in
+               </Button>
+    }
 
     render() {
         return(
@@ -44,9 +66,8 @@ class LoginForm extends Component {
                            secureTextEntry={true}
                     />
                 </CardSection>
-                <Spinner />
                 <CardSection>
-                    <Button onClick={this.onButtonPress}>Log in</Button>
+                    {this.renderButton()}
                 </CardSection>
             </Card>
         );
